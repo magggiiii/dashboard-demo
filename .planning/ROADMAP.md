@@ -16,7 +16,11 @@
   1. Team can view a verified architecture map showing actual code dependencies.
   2. Team can trace the end-to-end execution flow from UI to Database and back.
   3. Team understands where the implementation deviates from idiomatic React 19 and NestJS 11.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Establish baseline architecture truth using automated static analysis (Knip/dependency-cruiser).
+- [ ] 01-02-PLAN.md — Map end-to-end user data flow and perform idiomatic assessment of framework usage.
 
 ### Phase 2: AI Integration & Frontend Complexity Audit
 **Goal**: The team understands the risks, coupling, and failure modes within the UI and CopilotKit AI bridge.
@@ -44,6 +48,6 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Baseline Architecture & Flow Mapping | 0/0 | Not started | - |
+| 1. Baseline Architecture & Flow Mapping | 0/2 | In progress | - |
 | 2. AI Integration & Frontend Complexity Audit | 0/0 | Not started | - |
 | 3. Resilience, Performance & Risk Assessment | 0/0 | Not started | - |
