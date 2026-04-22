@@ -1,0 +1,526 @@
+{
+    "lineChart": {
+        "type": "chart",
+        "chartType": "line",
+        "title": "Monthly Revenue Trend",
+        "description": "Revenue growth over 6 months",
+        "config": {
+            "xAxis": "month",
+            "series": [
+                "revenue",
+                "expenses"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "month": "Jan",
+                "revenue": 4000,
+                "expenses": 2400
+            },
+            {
+                "month": "Feb",
+                "revenue": 3000,
+                "expenses": 1398
+            },
+            {
+                "month": "Mar",
+                "revenue": 2000,
+                "expenses": 9800
+            },
+            {
+                "month": "Apr",
+                "revenue": 2780,
+                "expenses": 3908
+            },
+            {
+                "month": "May",
+                "revenue": 1890,
+                "expenses": 4800
+            },
+            {
+                "month": "Jun",
+                "revenue": 2390,
+                "expenses": 3800
+            }
+        ]
+    },
+    "barChart": {
+        "type": "chart",
+        "chartType": "bar",
+        "title": "Product Sales Comparison",
+        "description": "Sales by product category",
+        "config": {
+            "xAxis": "category",
+            "series": [
+                "sales",
+                "target"
+            ],
+            "colors": [
+                "#8884d8",
+                "#ffc658"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "category": "Electronics",
+                "sales": 4000,
+                "target": 3500
+            },
+            {
+                "category": "Clothing",
+                "sales": 3000,
+                "target": 3200
+            },
+            {
+                "category": "Food",
+                "sales": 2000,
+                "target": 2500
+            },
+            {
+                "category": "Books",
+                "sales": 2780,
+                "target": 2800
+            },
+            {
+                "category": "Toys",
+                "sales": 1890,
+                "target": 2000
+            }
+        ]
+    },
+    "areaChart": {
+        "type": "chart",
+        "chartType": "area",
+        "title": "User Growth",
+        "description": "Cumulative user registrations",
+        "config": {
+            "xAxis": "week",
+            "series": [
+                "users",
+                "activeUsers"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "week": "Week 1",
+                "users": 1000,
+                "activeUsers": 800
+            },
+            {
+                "week": "Week 2",
+                "users": 1500,
+                "activeUsers": 1200
+            },
+            {
+                "week": "Week 3",
+                "users": 2200,
+                "activeUsers": 1800
+            },
+            {
+                "week": "Week 4",
+                "users": 3100,
+                "activeUsers": 2500
+            },
+            {
+                "week": "Week 5",
+                "users": 4200,
+                "activeUsers": 3400
+            },
+            {
+                "week": "Week 6",
+                "users": 5500,
+                "activeUsers": 4500
+            }
+        ]
+    },
+    "pieChart": {
+        "type": "chart",
+        "chartType": "pie",
+        "title": "Market Share Distribution",
+        "description": "Market share by company",
+        "config": {
+            "xAxis": "company",
+            "series": [
+                "share"
+            ],
+            "colors": [
+                "#0088FE",
+                "#00C49F",
+                "#FFBB28",
+                "#FF8042",
+                "#8884d8"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "company": "Company A",
+                "share": 35
+            },
+            {
+                "company": "Company B",
+                "share": 25
+            },
+            {
+                "company": "Company C",
+                "share": 20
+            },
+            {
+                "company": "Company D",
+                "share": 12
+            },
+            {
+                "company": "Company E",
+                "share": 8
+            }
+        ]
+    },
+    "scatterChart": {
+        "type": "chart",
+        "chartType": "scatter",
+        "title": "Price vs Quality Analysis",
+        "description": "Product positioning",
+        "config": {
+            "xAxis": "price",
+            "yAxis": "quality",
+            "series": [
+                "quality"
+            ],
+            "colors": [
+                "#8884d8"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "price": 100,
+                "quality": 85
+            },
+            {
+                "price": 120,
+                "quality": 88
+            },
+            {
+                "price": 150,
+                "quality": 92
+            },
+            {
+                "price": 180,
+                "quality": 95
+            },
+            {
+                "price": 200,
+                "quality": 97
+            },
+            {
+                "price": 90,
+                "quality": 80
+            },
+            {
+                "price": 110,
+                "quality": 83
+            },
+            {
+                "price": 140,
+                "quality": 90
+            },
+            {
+                "price": 170,
+                "quality": 94
+            },
+            {
+                "price": 220,
+                "quality": 98
+            }
+        ]
+    },
+    "radarChart": {
+        "type": "chart",
+        "chartType": "radar",
+        "title": "Employee Performance",
+        "description": "Multi-dimensional skill assessment",
+        "config": {
+            "xAxis": "skill",
+            "series": [
+                "employee1",
+                "employee2"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "skill": "Communication",
+                "employee1": 85,
+                "employee2": 90
+            },
+            {
+                "skill": "Technical",
+                "employee1": 95,
+                "employee2": 80
+            },
+            {
+                "skill": "Leadership",
+                "employee1": 75,
+                "employee2": 85
+            },
+            {
+                "skill": "Problem Solving",
+                "employee1": 90,
+                "employee2": 88
+            },
+            {
+                "skill": "Creativity",
+                "employee1": 80,
+                "employee2": 92
+            },
+            {
+                "skill": "Teamwork",
+                "employee1": 88,
+                "employee2": 87
+            }
+        ]
+    },
+    "radialBarChart": {
+        "type": "chart",
+        "chartType": "radialbar",
+        "title": "Goal Completion Progress",
+        "description": "Progress towards quarterly goals",
+        "config": {
+            "xAxis": "goal",
+            "series": [
+                "Q1",
+                "Q2",
+                "Q3"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d",
+                "#ffc658"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "goal": "Sales",
+                "Q1": 85,
+                "Q2": 92,
+                "Q3": 78
+            },
+            {
+                "goal": "Marketing",
+                "Q1": 90,
+                "Q2": 88,
+                "Q3": 95
+            },
+            {
+                "goal": "Development",
+                "Q1": 75,
+                "Q2": 80,
+                "Q3": 85
+            }
+        ]
+    },
+    "treemapChart": {
+        "type": "chart",
+        "chartType": "treemap",
+        "title": "Storage Usage by Department",
+        "description": "Data storage allocation",
+        "config": {
+            "xAxis": "department",
+            "series": [
+                "storage"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d",
+                "#ffc658",
+                "#ff8042",
+                "#0088fe"
+            ],
+            "showLegend": false
+        },
+        "data": [
+            {
+                "department": "Engineering",
+                "storage": 450
+            },
+            {
+                "department": "Marketing",
+                "storage": 280
+            },
+            {
+                "department": "Sales",
+                "storage": 320
+            },
+            {
+                "department": "HR",
+                "storage": 150
+            },
+            {
+                "department": "Finance",
+                "storage": 200
+            }
+        ]
+    },
+    "funnelChart": {
+        "type": "chart",
+        "chartType": "funnel",
+        "title": "Sales Conversion Funnel",
+        "description": "Customer journey stages",
+        "config": {
+            "xAxis": "stage",
+            "series": [
+                "users"
+            ],
+            "colors": [
+                "#8884d8",
+                "#83a6ed",
+                "#8dd1e1",
+                "#82ca9d",
+                "#a4de6c"
+            ],
+            "showLegend": false
+        },
+        "data": [
+            {
+                "stage": "Website Visitors",
+                "users": 10000
+            },
+            {
+                "stage": "Product Views",
+                "users": 5000
+            },
+            {
+                "stage": "Add to Cart",
+                "users": 2000
+            },
+            {
+                "stage": "Checkout",
+                "users": 1000
+            },
+            {
+                "stage": "Purchase",
+                "users": 600
+            }
+        ]
+    },
+    "sankeyChart": {
+        "type": "chart",
+        "chartType": "sankey",
+        "title": "Traffic Source Flow",
+        "description": "User flow from sources to actions",
+        "config": {
+            "xAxis": "source",
+            "series": [
+                "signup",
+                "purchase",
+                "browse"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d",
+                "#ffc658"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "source": "Google",
+                "signup": 300,
+                "purchase": 150,
+                "browse": 200
+            },
+            {
+                "source": "Facebook",
+                "signup": 200,
+                "purchase": 100,
+                "browse": 150
+            },
+            {
+                "source": "Direct",
+                "signup": 150,
+                "purchase": 80,
+                "browse": 100
+            },
+            {
+                "source": "Email",
+                "signup": 100,
+                "purchase": 60,
+                "browse": 50
+            }
+        ]
+    },
+    "composedChart": {
+        "type": "chart",
+        "chartType": "composed",
+        "title": "Multi-Metric Dashboard",
+        "description": "Combined view of key metrics",
+        "config": {
+            "xAxis": "month",
+            "series": [
+                "revenue",
+                "users",
+                "conversion"
+            ],
+            "colors": [
+                "#8884d8",
+                "#82ca9d",
+                "#ffc658"
+            ],
+            "showLegend": true
+        },
+        "data": [
+            {
+                "month": "Jan",
+                "revenue": 4000,
+                "users": 2400,
+                "conversion": 3200
+            },
+            {
+                "month": "Feb",
+                "revenue": 3000,
+                "users": 1398,
+                "conversion": 2800
+            },
+            {
+                "month": "Mar",
+                "revenue": 2000,
+                "users": 9800,
+                "conversion": 3500
+            },
+            {
+                "month": "Apr",
+                "revenue": 2780,
+                "users": 3908,
+                "conversion": 4200
+            },
+            {
+                "month": "May",
+                "revenue": 1890,
+                "users": 4800,
+                "conversion": 3800
+            },
+            {
+                "month": "Jun",
+                "revenue": 2390,
+                "users": 3800,
+                "conversion": 4100
+            }
+        ]
+    }
+}

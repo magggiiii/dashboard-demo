@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: #f8fafc;
+  /* slate-50 */
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+  }
+}
+
+/* Override CopilotKit positioning to place it to the left of our Bento icon */
+.copilotKitSidebar {
+  bottom: 1rem !important;
+  right: 5.5rem !important;
+}
+
+/* Fix chat sidebar layout for a chatbot look */
+.copilot-chat-container {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  position: relative !important;
+}
+
+/* Ensure the internal CopilotChat component fills the container */
+.copilot-chat-container>div {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 
+ * CopilotKit UI internal overrides for v1.51+
+ * These classes target the specific structure of the chat component
+ */
+
+/* Message list should scroll and fill middle space */
+.cp-chat-message-list,
+[class*="CopilotChat-Messages"],
+.copilot-chat-messages {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding-bottom: 20px !important;
+}
+
+/* Input area should be fixed at the bottom with a premium look */
+.cp-chat-input,
+[class*="CopilotChat-Input"],
+.copilot-chat-input-area,
+.copilot-chat-footer {
+  flex: 0 0 auto !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background: white !important;
+  padding: 16px !important;
+  margin-top: auto !important;
+  box-shadow: 0 -4px 12px -2px rgba(0, 0, 0, 0.03) !important;
+  z-index: 10;
+}
+
+/* Modernize the text area appearance */
+.copilot-chat-input-area textarea,
+[class*="CopilotChat-Input"] textarea {
+  border-radius: 16px !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 12px 16px !important;
+  background-color: #f8fafc !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  transition: all 0.2s ease !important;
+  resize: none !important;
+  min-height: 44px !important;
+  max-height: 200px !important;
+}
+
+.copilot-chat-input-area textarea:focus,
+[class*="CopilotChat-Input"] textarea:focus {
+  background-color: white !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+  outline: none !important;
+}
+
+/* Ensure messages have some breathing room from the fixed bottom */
+.cp-chat-message-list,
+[class*="CopilotChat-Messages"],
+.copilot-chat-messages {
+  padding-bottom: 32px !important;
+}

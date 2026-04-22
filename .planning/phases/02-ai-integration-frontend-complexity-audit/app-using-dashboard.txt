@@ -1,0 +1,4 @@
+gui-dashboard-frontend-main/src/app/page.tsx:import { useDashboard } from '@/hooks/useDashboard';
+gui-dashboard-frontend-main/src/app/page.tsx:  // Merge all parsed data into a single array for useDashboard and AI analysis
+gui-dashboard-frontend-main/src/app/page.tsx:  // useDashboard now handles data analysis logic internally via consolidated actions
+gui-dashboard-frontend-main/src/app/page.tsx:  const { dashboard, updateDashboard, saveDashboard, updateDashboardToDb, loadDashboard, getAllDashboards, deleteDashboard, prepareElement } = useDashboard({ parsedData: mergedParsedData });

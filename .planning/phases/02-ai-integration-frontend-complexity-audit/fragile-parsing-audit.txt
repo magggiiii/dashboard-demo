@@ -1,0 +1,6 @@
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:        const seriesArray = (configSeries as string || "").split(',').map(s => s.trim()).filter(Boolean);
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:        const colorsArray = (configColors as string || "").split(',').map(c => c.trim()).filter(Boolean);
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:            const firstTableCol = tableColumns?.split(',')[0]?.split(':')[0]?.trim();
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                    ? tableColumns.split(",").map((col: string) => {
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                        const [key, header] = col.split(":").map(s => s.trim());
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                const formulaMatch = metricValue.match(/^(\w+)\((.+)\)$/);
