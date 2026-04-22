@@ -10,8 +10,8 @@
 - [ ] **AUDIT-03**: Evaluate idiomatic usage of the tech stack (React 19, NestJS 11)
 
 ### AI Integration
-- [ ] **AI-01**: Analyze the UI ↔ AI Bridge (Generative UI and CopilotKit integration)
-- [ ] **AI-02**: Assess AI intent parsing to shift from regex-based extraction to structured JSON
+- [x] **AI-01**: Analyze the UI ↔ AI Bridge (Generative UI and CopilotKit integration)
+- [x] **AI-02**: Assess AI intent parsing to shift from regex-based extraction to structured JSON
 
 ### Dependency Control
 - [ ] **CTRL-01**: Analyze Control vs Dependency (owned vs external, abstraction layers, failure risks)
@@ -24,7 +24,7 @@
 ### Issue & Performance Profiling
 - [ ] **PERF-01**: Analyze Performance & Scalability (what breaks at 10x data or 100x users, bottlenecks)
 - [ ] **ISSUE-01**: Document specific Issues explicitly mapped by Symptom vs Root Cause vs Impact
-- [ ] **CPL-01**: Identify Coupling & Hidden Complexity (tight coupling, fragile integrations, overloaded modules)
+- [x] **CPL-01**: Identify Coupling & Hidden Complexity (tight coupling, fragile integrations, overloaded modules)
 
 ## v2 Requirements
 
@@ -43,12 +43,12 @@
 | AUDIT-01 | Phase 1 | Pending |
 | AUDIT-02 | Phase 3 | Pending |
 | AUDIT-03 | Phase 1 | Pending |
-| AI-01 | Phase 2 | Pending |
-| AI-02 | Phase 2 | Pending |
+| AI-01 | Phase 2 | Complete |
+| AI-02 | Phase 2 | Complete |
 | CTRL-01 | Phase 3 | Pending |
 | SYS-01 | Phase 1 | Pending |
 | SYS-02 | Phase 3 | Pending |
 | SYS-03 | Phase 3 | Pending |
 | PERF-01 | Phase 3 | Pending |
 | ISSUE-01 | Phase 3 | Pending |
-| CPL-01 | Phase 2 | Pending |
+| CPL-01 | Phase 2 | Complete |

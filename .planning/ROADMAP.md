@@ -30,8 +30,11 @@ Plans:
   1. Team can review specific code examples of fragile AI intent parsing (e.g., regex extraction).
   2. Team can identify overloaded frontend components and tight coupling.
   3. Team understands the architectural risks associated with the current Generative UI implementation.
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+
+Plans:
+- [x] 02-01-PLAN.md — Audit intent parsing and AI bridge tracing.
+- [ ] 02-02-PLAN.md — Map frontend state orchestration and component coupling.
 
 ### Phase 3: Resilience, Performance & Risk Assessment
 **Goal**: The team has a comprehensive log of system vulnerabilities, architectural trade-offs, and scalability bottlenecks.
@@ -49,5 +52,5 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Baseline Architecture & Flow Mapping | 0/2 | In progress | - |
-| 2. AI Integration & Frontend Complexity Audit | 0/0 | Not started | - |
+| 2. AI Integration & Frontend Complexity Audit | 0/2 | Not started | - |
 | 3. Resilience, Performance & Risk Assessment | 0/0 | Not started | - |
