@@ -1,6 +1,22 @@
-gui-dashboard-frontend-main/src/hooks/useDashboard.ts:        const seriesArray = (configSeries as string || "").split(',').map(s => s.trim()).filter(Boolean);
-gui-dashboard-frontend-main/src/hooks/useDashboard.ts:        const colorsArray = (configColors as string || "").split(',').map(c => c.trim()).filter(Boolean);
-gui-dashboard-frontend-main/src/hooks/useDashboard.ts:            const firstTableCol = tableColumns?.split(',')[0]?.split(':')[0]?.trim();
-gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                    ? tableColumns.split(",").map((col: string) => {
-gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                        const [key, header] = col.split(":").map(s => s.trim());
+gui-dashboard-frontend-main/src/app/page.tsx:    // Regex to find tags: matches until a brace followed by </function> or end-of-string/next-tag
+gui-dashboard-frontend-main/src/app/page.tsx:    // Hyper-robust regex to catch updateDashboardUI tags even if squashed or malformed
+gui-dashboard-frontend-main/src/app/page.tsx:    let match;
+gui-dashboard-frontend-main/src/app/page.tsx:    while ((match = tagRegex.exec(lastMessage.content)) !== null) {
+gui-dashboard-frontend-main/src/app/page.tsx:      const tagContent = match[0];
+gui-dashboard-frontend-main/src/app/page.tsx:      const jsonArgs = match[2];
+gui-dashboard-frontend-main/src/utils/dashboard-utils.ts:            const val = typeof rawVal === 'number' ? rawVal : parseFloat(String(rawVal).replace(/[$,]/g, ''));
+gui-dashboard-frontend-main/src/utils/json-utils.ts:        // Greedily match until the last "]" followed by a quote and comma/brace
+gui-dashboard-frontend-main/src/utils/json-utils.ts:        return jsonStr.replace(/"(dataJson)":\s*"(\[[\s\S]*?\])"(?=\s*[,}])/g, (match, key, nested) => {
+gui-dashboard-frontend-main/src/utils/json-utils.ts:            const escaped = nested.replace(/(?<!\\)"/g, '\\"');
+gui-dashboard-frontend-main/src/utils/json-utils.ts:            let cleaned = trimmedText.replace(/```(?:json)?\s*([\s\S]*?)```/g, '$1').trim();
+gui-dashboard-frontend-main/src/components/SpreadsheetPreview.tsx:                                    {header.replace(/_/g, ' ')}
+gui-dashboard-frontend-main/src/components/ChatDataSidebar.tsx:    // Hyper-robust regex to catch updateDashboardUI tags even if squashed or malformed
+gui-dashboard-frontend-main/src/components/ChatDataSidebar.tsx:        ? content.replace(/<function[.(][\s\S]*?>[\s\S]*?(?:<\/function>|$)/g, '').trim()
+gui-dashboard-frontend-main/src/components/ChatDataSidebar.tsx:        const cleaned = message.content.replace(/<function(?:\.|\()[^>]*?>[\s\S]*?(?:<\/function>|$)/g, '').trim();
+gui-dashboard-frontend-main/src/components/ChatDataSidebar.tsx:                // Wrap onRegenerate to match signature
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:            const parsed = parseFloat(String(val).replace(/[$,]/g, ''));
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                    ? (elementId || `chart-${(elementTitle || 'new').toLowerCase().replace(/\s+/g, '-')}`)
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                    ? (elementId || `table-${(elementTitle || 'new').toLowerCase().replace(/\s+/g, '-')}`)
 gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                const formulaMatch = metricValue.match(/^(\w+)\((.+)\)$/);
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                const cleanVal = String(computedValue).replace(/[$,]/g, '');
+gui-dashboard-frontend-main/src/hooks/useDashboard.ts:                    ? (elementId || `metric-${(metricLabel || elementTitle || 'new').toLowerCase().replace(/\s+/g, '-')}`)
