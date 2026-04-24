@@ -54,7 +54,7 @@ export const Chart: React.FC<{ visualization: Visualization }> = ({ visualizatio
     };
 
     return (
-        <ChartContainer title={title} description={description}>
+        <ChartContainer title={title} description={description ?? undefined}>
             {renderChartContent()}
         </ChartContainer>
     );
