@@ -1,4 +1,5 @@
 "use client";
+import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, Database, X, List, FileType, Sheet } from 'lucide-react';
@@ -133,7 +134,7 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
         if (restoreVersion === lastRestoredVersionRef.current) return;
 
         if (chatMessages && chatMessages.length > 0) {
-            console.log('Syncing context messages to CopilotChat (version', restoreVersion, '):', chatMessages.length);
+            logger.log('Syncing context messages to CopilotChat (version', restoreVersion, '):', chatMessages.length);
             const copilotMessages = chatMessages.map(msg => new TextMessage({
                 role: msg.role === 'assistant' ? MessageRole.Assistant : MessageRole.User,
                 content: msg.content,
@@ -143,7 +144,7 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
             lastProcessedCountRef.current = copilotMessages.length;
         } else {
             // Context was cleared (new dashboard or reset) — clear CopilotChat state too
-            console.log('Clearing CopilotChat messages (version', restoreVersion, ')');
+            logger.log('Clearing CopilotChat messages (version', restoreVersion, ')');
             setMessages([]);
             lastProcessedCountRef.current = 0;
         }
@@ -170,7 +171,7 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
                             : 'assistant';
 
                         if (content && content !== INITIAL_MESSAGE) {
-                            console.log('Captured new message from messages array:', role, content.substring(0, 50));
+                            logger.log('Captured new message from messages array:', role, content.substring(0, 50));
                             onMessage({
                                 content,
                                 role,
@@ -197,7 +198,7 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
                     setInstructions(data.instructions);
                 }
             } catch (error) {
-                console.error("Failed to fetch instructions from backend:", error);
+                logger.error("Failed to fetch instructions from backend:", error);
             }
         };
         fetchInstructions();
@@ -210,7 +211,7 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
                 initial: INITIAL_MESSAGE
             }}
             onSubmitMessage={(message: string) => {
-                console.log('User submitted message:', message);
+                logger.log('User submitted message:', message);
                 onMessage({
                     content: message,
                     role: 'user',
@@ -218,7 +219,7 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
                 });
             }}
             onInProgress={(inProgress: boolean) => {
-                console.log('AI in progress:', inProgress);
+                logger.log('AI in progress:', inProgress);
             }}
             AssistantMessage={FilteredAssistantMessage}
             RenderMessage={FilteredRenderMessage}

@@ -1,4 +1,5 @@
 "use client";
+import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { GenUIRuntime } from '@/components/GenUIRuntime';
@@ -81,13 +82,13 @@ function DashboardContent() {
       const tagKey = `${lastMessage.id || 'new'}-${tagContent}`;
 
       if (!processedTags.current.has(tagKey)) {
-        console.log("Tag Parser - Found tag:", tagContent);
+        logger.log("Tag Parser - Found tag:", tagContent);
 
         // Robust JSON extraction using our utility
         const args = safeJsonParse(jsonArgs, null);
 
         if (args) {
-          console.log("Tag Parser - Parsed args:", args);
+          logger.log("Tag Parser - Parsed args:", args);
           try {
             if (args.action === "remove") {
               updateDashboard("remove", undefined, args.elementId);
@@ -97,17 +98,17 @@ function DashboardContent() {
                 args.elementId = `${args.elementType || 'el'}-${Date.now()}`;
               }
               const element = prepareElement(args, mergedParsedData);
-              console.log("Tag Parser - Prepared element:", element.id, element.title);
+              logger.log("Tag Parser - Prepared element:", element.id, element.title);
               updateDashboard(args.action || "add", element, args.elementId || element.id);
             }
 
             processedTags.current.add(tagKey);
-            console.log("Tag Parser - Successfully executed action:", args.action);
+            logger.log("Tag Parser - Successfully executed action:", args.action);
           } catch (e) {
-            console.error("Tag Parser - Failed to execute action:", e);
+            logger.error("Tag Parser - Failed to execute action:", e);
           }
         } else {
-          console.error("Tag Parser - Failed to parse JSON tag:", jsonArgs);
+          logger.error("Tag Parser - Failed to parse JSON tag:", jsonArgs);
         }
       }
     }
@@ -119,7 +120,7 @@ function DashboardContent() {
       const dashboards = await getAllDashboards();
       setSavedDashboards(dashboards);
     } catch (error) {
-      console.error('Failed to load dashboards:', error);
+      logger.error('Failed to load dashboards:', error);
     } finally {
       setIsLoadingList(false);
     }
@@ -132,9 +133,9 @@ function DashboardContent() {
     const timer = setTimeout(async () => {
       try {
         await updateDashboardToDb(currentDashboardId, undefined, undefined, connectedSources);
-        console.log('Auto-saved dashboard with connected sources');
+        logger.log('Auto-saved dashboard with connected sources');
       } catch (error) {
-        console.error('Auto-save failed:', error);
+        logger.error('Auto-save failed:', error);
       }
     }, 2000);
 
@@ -151,7 +152,7 @@ function DashboardContent() {
         // Auto-load the first dashboard if exists
         if (dashboards.length > 0) {
           const firstDashboard = dashboards[0];
-          console.log('Auto-loading first dashboard:', firstDashboard.id, firstDashboard.name);
+          logger.log('Auto-loading first dashboard:', firstDashboard.id, firstDashboard.name);
 
           // Set ID and Name before loading content to ensure consistency
           setCurrentDashboardId(firstDashboard.id);
@@ -186,9 +187,9 @@ function DashboardContent() {
 
           // Load chat messages for the dashboard
           try {
-            console.log('Loading messages for dashboard:', firstDashboard.id);
+            logger.log('Loading messages for dashboard:', firstDashboard.id);
             const messages = await chatApi.getMessages(firstDashboard.id);
-            console.log('Loaded chat messages:', messages);
+            logger.log('Loaded chat messages:', messages);
             setChatMessages(messages);
 
             // Also populate context with loaded messages
@@ -203,16 +204,16 @@ function DashboardContent() {
             if (messages.length > 0) {
               const lastLoaded = messages[messages.length - 1];
               lastProcessedMessageKey.current = `${lastLoaded.role}-${lastLoaded.content?.substring(0, 100)}`;
-              console.log("Init - Updated lastProcessedMessageKey to prevent duplication:", lastProcessedMessageKey.current);
+              logger.log("Init - Updated lastProcessedMessageKey to prevent duplication:", lastProcessedMessageKey.current);
             }
           } catch (e: any) {
-            console.log('No chat messages or error:', e?.message || e);
+            logger.log('No chat messages or error:', e?.message || e);
           }
 
-          console.log('Loaded existing dashboard:', firstDashboard.name);
+          logger.log('Loaded existing dashboard:', firstDashboard.name);
         }
       } catch (error) {
-        console.error('Failed to load dashboards:', error);
+        logger.error('Failed to load dashboards:', error);
       } finally {
         setIsLoadingList(false);
       }
@@ -241,7 +242,7 @@ function DashboardContent() {
 
       return data;
     } catch (error) {
-      console.error('Failed to load file data:', error);
+      logger.error('Failed to load file data:', error);
       return [];
     }
   };
@@ -262,7 +263,7 @@ function DashboardContent() {
       await loadDashboardsList();
       alert('Dashboard saved successfully!');
     } catch (error) {
-      console.error('Failed to save dashboard:', error);
+      logger.error('Failed to save dashboard:', error);
       alert('Failed to save dashboard');
     } finally {
       setIsSaving(false);
@@ -285,7 +286,7 @@ function DashboardContent() {
       setCurrentDashboardId(loadingDashboardId);
 
       const result = await loadDashboard(loadingDashboardId);
-      console.log('Loaded dashboard data:', result);
+      logger.log('Loaded dashboard data:', result);
 
       const connectedSourcesToUse = result.connectedSources || (result.connectedSource ? [result.connectedSource] : found?.connectedSources || (found?.connectedSource ? [found.connectedSource] : []));
 
@@ -320,16 +321,16 @@ function DashboardContent() {
         }));
         setContextChatMessages(contextMessages);
 
-        console.log('Loaded chat messages:', messages);
+        logger.log('Loaded chat messages:', messages);
 
         // Sync the processing key so the last loaded message is not re-saved
         if (messages.length > 0) {
           const lastLoaded = messages[messages.length - 1];
           lastProcessedMessageKey.current = `${lastLoaded.role}-${lastLoaded.content?.substring(0, 100)}`;
-          console.log("Load Hook - Updated lastProcessedMessageKey to prevent re-saving:", lastProcessedMessageKey.current);
+          logger.log("Load Hook - Updated lastProcessedMessageKey to prevent re-saving:", lastProcessedMessageKey.current);
         }
       } catch (chatError) {
-        console.log('No chat messages found');
+        logger.log('No chat messages found');
         setChatMessages([]);
         setContextChatMessages([]);
       }
@@ -337,7 +338,7 @@ function DashboardContent() {
       setShowLoadMenu(false);
       setIsChatSidebarOpen(false);
     } catch (error) {
-      console.error('Failed to load dashboard:', error);
+      logger.error('Failed to load dashboard:', error);
       alert('Failed to load dashboard');
     } finally {
       isLoadingDashboardRef.current = false;
@@ -355,7 +356,7 @@ function DashboardContent() {
       }
       await loadDashboardsList();
     } catch (error) {
-      console.error('Failed to delete dashboard:', error);
+      logger.error('Failed to delete dashboard:', error);
     }
   };
 
@@ -377,28 +378,28 @@ function DashboardContent() {
 
   // Debug: Log context messages
   useEffect(() => {
-    console.log('Context chatMessages changed:', contextChatMessages?.length, contextChatMessages?.map(m => ({ role: m?.role, content: m?.content?.substring(0, 20) })));
+    logger.log('Context chatMessages changed:', contextChatMessages?.length, contextChatMessages?.map(m => ({ role: m?.role, content: m?.content?.substring(0, 20) })));
   }, [contextChatMessages]);
 
 
   // Save chat messages when new messages are added
   const handleSaveChatMessage = async (dashboardId: string, content: string, role: string) => {
     try {
-      console.log('Saving message to dashboard:', dashboardId, { content: content.substring(0, 50), role });
+      logger.log('Saving message to dashboard:', dashboardId, { content: content.substring(0, 50), role });
       const savedMessage = await chatApi.addMessage(dashboardId, {
         content,
         role,
       });
-      console.log('Message saved successfully:', savedMessage);
+      logger.log('Message saved successfully:', savedMessage);
 
       // Refresh chat messages
       const messages = await chatApi.getMessages(dashboardId);
-      console.log('Messages after save:', messages.length);
+      logger.log('Messages after save:', messages.length);
       setChatMessages(messages);
     } catch (error: any) {
-      console.error('Failed to save chat message - Full error:', error);
-      console.error('Response data:', error?.response?.data);
-      console.error('Status:', error?.response?.status);
+      logger.error('Failed to save chat message - Full error:', error);
+      logger.error('Response data:', error?.response?.data);
+      logger.error('Status:', error?.response?.status);
     }
   };
 
@@ -414,7 +415,7 @@ function DashboardContent() {
     if (!contextChatMessages || contextChatMessages.length === 0) return;
     if (isLoadingDashboardRef.current) return;
     if (!currentDashboardId) {
-      console.log('Save Hook - No dashboard ID, skipping message save to prevent duplicate creation');
+      logger.log('Save Hook - No dashboard ID, skipping message save to prevent duplicate creation');
       return;
     }
 
@@ -422,14 +423,14 @@ function DashboardContent() {
 
     // Skip saving the initial boilerplate message
     if (lastMessage.content === INITIAL_MESSAGE) {
-      console.log("Saving Hook - Skipping initial boilerplate message");
+      logger.log("Saving Hook - Skipping initial boilerplate message");
       return;
     }
 
     const messageKey = `${lastMessage.role}-${lastMessage.content?.substring(0, 100)}`;
 
     if (messageKey !== lastProcessedMessageKey.current) {
-      console.log("Saving Hook - Processing new message from context:", lastMessage.role);
+      logger.log("Saving Hook - Processing new message from context:", lastMessage.role);
 
       const saveInternal = async () => {
         try {
@@ -437,17 +438,17 @@ function DashboardContent() {
 
           // Double-check we have a valid dashboard ID before saving
           if (!dashboardId) {
-            console.log('Save Hook - No dashboard ID available, skipping save');
+            logger.log('Save Hook - No dashboard ID available, skipping save');
             return;
           }
 
-          console.log("Saving Hook - SAVING message:", lastMessage.role, "to dashboard:", dashboardId);
+          logger.log("Saving Hook - SAVING message:", lastMessage.role, "to dashboard:", dashboardId);
 
           await handleSaveChatMessage(dashboardId, lastMessage.content || '', lastMessage.role);
           lastProcessedMessageKey.current = messageKey;
-          console.log("Saving Hook - SUCCESS: Message saved");
+          logger.log("Saving Hook - SUCCESS: Message saved");
         } catch (err) {
-          console.error("Saving Hook - FAILURE in saveInternal:", err);
+          logger.error("Saving Hook - FAILURE in saveInternal:", err);
         }
       };
 

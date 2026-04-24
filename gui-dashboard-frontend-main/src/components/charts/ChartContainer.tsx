@@ -15,7 +15,7 @@ export const ChartContainer: React.FC<ChartContainerProps> = ({ title, descripti
                 <h3 className="text-lg font-bold text-slate-800 tracking-tight">{title}</h3>
                 {description && <p className="text-sm text-slate-500 font-medium mt-1">{description}</p>}
             </div>
-            <div className="w-full flex-1 min-h-0">
+            <div className="w-full flex-1 min-h-[300px]">
                 {children}
             </div>
         </div>

@@ -1,4 +1,5 @@
 "use client";
+import { logger } from '@/utils/logger';
 
 import { useState, useCallback, useMemo } from 'react';
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
@@ -23,7 +24,7 @@ const parseBackendDashboard = (backendData: DashboardResponse): Dashboard => {
 
     // Fallback to reconstructing from 'charts' relation if elements is still empty
     if (elements.length === 0 && backendData.charts && Array.isArray(backendData.charts)) {
-        console.log('[useDashboard] Reconstructing elements from charts relation');
+        logger.log('[useDashboard] Reconstructing elements from charts relation');
         for (const chart of backendData.charts) {
             try {
                 const config = chart.config || {};
@@ -64,7 +65,7 @@ const parseBackendDashboard = (backendData: DashboardResponse): Dashboard => {
                     } as UIElement);
                 }
             } catch (err) {
-                console.error('[useDashboard] Failed to parse individual chart into element:', err, chart);
+                logger.error('[useDashboard] Failed to parse individual chart into element:', err, chart);
             }
         }
     }
@@ -162,7 +163,7 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
             const firstTableCol = tableColumns?.split(',')[0]?.split(':')[0]?.trim();
             if (firstTableCol) {
                 effectiveXAxis = firstTableCol;
-                console.log(`useDashboard: Table aggregation detected without explicit X-Axis. Grouping by ${effectiveXAxis}`);
+                logger.log(`useDashboard: Table aggregation detected without explicit X-Axis. Grouping by ${effectiveXAxis}`);
             }
         }
 
@@ -199,11 +200,11 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
             }
             effectiveAggregation = 'count';
             effectiveSeriesArray = [`${originalCategory}_count`];
-            console.log(`useDashboard: Smart-fallback to 'count' because ${originalCategory} is categorical.`);
+            logger.log(`useDashboard: Smart-fallback to 'count' because ${originalCategory} is categorical.`);
         } else if ((!aggregation || aggregation === 'none') && effectiveXAxis && seriesArray.length > 0 && isFirstSeriesNumeric) {
             // Default numeric series with an X-Axis to 'sum'
             effectiveAggregation = 'sum';
-            console.log(`useDashboard: Auto-defaulting to 'sum' because series is numeric and X-Axis is present.`);
+            logger.log(`useDashboard: Auto-defaulting to 'sum' because series is numeric and X-Axis is present.`);
         }
 
         // Apply Aggregation if required
@@ -257,7 +258,7 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
                     if (['sum', 'avg', 'count', 'min', 'max'].includes(func.toLowerCase())) {
                         effectiveAggregation = func.toLowerCase();
                         effectiveSeriesArray = [col.trim()];
-                        console.log(`useDashboard: Parsed metric formula ${func}(${col})`);
+                        logger.log(`useDashboard: Parsed metric formula ${func}(${col})`);
                     }
                 }
             }
@@ -267,14 +268,14 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
             if (!effectiveAggregation && availableColumns.includes(String(metricValue))) {
                 effectiveAggregation = 'sum';
                 effectiveSeriesArray = [String(metricValue)];
-                console.log(`useDashboard: Auto-aggregating raw column ${metricValue} for metric.`);
+                logger.log(`useDashboard: Auto-aggregating raw column ${metricValue} for metric.`);
             }
 
             if (effectiveAggregation && effectiveAggregation !== 'none' && effectiveSeriesArray.length > 0) {
                 const globalAgg = aggregateData(parsedData, undefined, effectiveSeriesArray, effectiveAggregation);
                 if (globalAgg.length > 0) {
                     computedValue = String(globalAgg[0][effectiveSeriesArray[0]]);
-                    console.log(computedValue);
+                    logger.log(computedValue);
                 }
             }
 
@@ -449,8 +450,8 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
             },
         ],
         handler: async (args) => {
-            console.log("ACTION_HANDLER_DEBUG: updateDashboardUI triggered with args:", JSON.stringify(args).substring(0, 200));
-            console.log("CopilotAction:updateDashboardUI triggered", {
+            logger.log("ACTION_HANDLER_DEBUG: updateDashboardUI triggered with args:", JSON.stringify(args).substring(0, 200));
+            logger.log("CopilotAction:updateDashboardUI triggered", {
                 ...args,
                 dataJson: args.dataJson ? (args.dataJson.length > 100 ? args.dataJson.substring(0, 100) + "..." : args.dataJson) : null
             });
@@ -522,8 +523,8 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
     }), [dashboard]);
 
     useCopilotReadable({
-        description: "The tabular data available for the dashboard. CRITICAL: This data is merged from MULTIPLE DISTINCT SOURCES. Each row contains a '__source' field indicating which file it came from. When analyzing or generating a dashboard, YOU MUST GIVE EQUAL PRIORITY TO ALL SOURCES. Try to find correlations between sources or ensure each source has its own representative metrics/charts on the dashboard.",
-        value: localData,
+        description: "The tabular data available for the dashboard (truncated to prevent token limits). CRITICAL: This data is merged from MULTIPLE DISTINCT SOURCES. Each row contains a '__source' field indicating which file it came from. When analyzing or generating a dashboard, YOU MUST GIVE EQUAL PRIORITY TO ALL SOURCES. Try to find correlations between sources or ensure each source has its own representative metrics/charts on the dashboard.",
+        value: localData.slice(0, 20),
     });
     useCopilotReadable({
         description: "The current dashboard configuration and its elements (metadata only). Check this list before adding a new element to see if you should update or remove an existing one instead.",
@@ -563,11 +564,11 @@ export const useDashboard = ({ parsedData: localData = [] }: UseDashboardProps =
         },
         loadDashboard: async (id: string) => {
             const result = await dashboardApi.getById(id);
-            console.log('[useDashboard] Raw API result:', result);
-            console.log('[useDashboard] result.data:', result.data);
-            console.log('[useDashboard] result.charts:', result.charts);
+            logger.log('[useDashboard] Raw API result:', result);
+            logger.log('[useDashboard] result.data:', result.data);
+            logger.log('[useDashboard] result.charts:', result.charts);
             const parsed = parseBackendDashboard(result);
-            console.log('[useDashboard] Parsed dashboard:', parsed);
+            logger.log('[useDashboard] Parsed dashboard:', parsed);
             setDashboard(parsed);
             return result;
         },

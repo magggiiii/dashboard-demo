@@ -5,6 +5,9 @@
 - [ ] **Phase 1: Baseline Architecture & Flow Mapping** - Map current architecture, flow, and stack idiomatic usage
 - [ ] **Phase 2: AI Integration & Frontend Complexity Audit** - Analyze the UI ↔ AI bridge, intent parsing, and coupling
 - [ ] **Phase 3: Resilience, Performance & Risk Assessment** - Evaluate system risks, trade-offs, and scalability bottlenecks
+- [ ] **Phase 4: AI Architecture Extension Analysis** - Assess current AI limits and evaluate agentic extension opportunities
+- [ ] **Phase 5: Full System UAT and Comprehensive Issue Report** - Perform a complete check of all possible actions and issues in the system
+- [ ] **Phase 6: Dockerization and Flexible API Configuration without Rebuilds** - Plan Docker setup supporting dynamic API configs without rebuilding images
 
 ## Phase Details
 
@@ -47,6 +50,33 @@ Plans:
   4. Team knows which components will break under 10x to 100x data or user load.
 **Plans**: TBD
 
+### Phase 4: AI Architecture Extension Analysis
+**Goal**: Assess current AI limits and evaluate agentic extension opportunities.
+**Depends on**: Phase 3
+**Requirements**: N/A
+**Success Criteria** (what must be TRUE):
+  1. Agentic extension opportunities are documented.
+**Plans**: TBD
+
+### Phase 5: Full System UAT and Comprehensive Issue Report
+**Goal**: Perform a complete check of all possible actions and issues in the system.
+**Depends on**: Phase 4
+**Requirements**: N/A
+**Success Criteria** (what must be TRUE):
+  1. All system actions are checked.
+  2. A comprehensive report of issues is created.
+**Plans**: TBD
+
+### Phase 6: Dockerization and Flexible API Configuration without Rebuilds
+**Goal**: Plan the dockerization of the system while letting the user setup their own API configs via env without rebuilding images.
+**Depends on**: Phase 5
+**Requirements**: N/A
+**Success Criteria** (what must be TRUE):
+  1. The system can be containerized.
+  2. End users can configure model, Bifrost, Langfuse, etc. via environment variables at runtime.
+  3. No image rebuilds are required when changing these configurations.
+**Plans**: TBD
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -54,3 +84,6 @@ Plans:
 | 1. Baseline Architecture & Flow Mapping | 0/2 | In progress | - |
 | 2. AI Integration & Frontend Complexity Audit | 0/2 | Not started | - |
 | 3. Resilience, Performance & Risk Assessment | 0/0 | Not started | - |
+| 4. AI Architecture Extension Analysis | 0/0 | Not started | - |
+| 5. Full System UAT and Comprehensive Issue Report | 0/0 | Not started | - |
+| 6. Dockerization and Flexible API Configuration without Rebuilds | 0/0 | Not started | - |

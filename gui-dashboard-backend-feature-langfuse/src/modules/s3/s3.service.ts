@@ -10,7 +10,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class S3Service {
-  private s3Client: S3Client;
+  private s3Client: S3Client | null = null;
   private bucketName: string;
 
   constructor(private configService: ConfigService) {
@@ -18,15 +18,23 @@ export class S3Service {
     const accessKeyId = this.configService.get('AWS_ACCESS_KEY_ID');
     const secretAccessKey = this.configService.get('AWS_SECRET_ACCESS_KEY');
 
-    this.s3Client = new S3Client({
-      region,
-      credentials: {
-        accessKeyId,
-        secretAccessKey,
-      },
-    });
+    if (accessKeyId && secretAccessKey) {
+      this.s3Client = new S3Client({
+        region,
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
+      });
+    }
 
     this.bucketName = this.configService.get('S3_BUCKET_NAME') || 'copilotkit-dashboard-files';
+  }
+
+  private checkS3Config() {
+    if (!this.s3Client) {
+      throw new Error('File uploads require AWS S3 configuration. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env file.');
+    }
   }
 
   async uploadFile(
@@ -35,6 +43,7 @@ export class S3Service {
     contentType: string,
     userId: string,
   ): Promise<string> {
+    this.checkS3Config();
     const key = `uploads/${userId}/${Date.now()}-${fileName}`;
 
     const command = new PutObjectCommand({
@@ -44,27 +53,29 @@ export class S3Service {
       ContentType: contentType,
     });
 
-    await this.s3Client.send(command);
+    await this.s3Client!.send(command);
 
     return key;
   }
 
   async getSignedUrl(key: string, expiresIn = 3600): Promise<string> {
+    this.checkS3Config();
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
       Key: key,
     });
 
-    return getSignedUrl(this.s3Client, command, { expiresIn });
+    return getSignedUrl(this.s3Client!, command, { expiresIn });
   }
 
   async deleteFile(key: string): Promise<void> {
+    this.checkS3Config();
     const command = new DeleteObjectCommand({
       Bucket: this.bucketName,
       Key: key,
     });
 
-    await this.s3Client.send(command);
+    await this.s3Client!.send(command);
   }
 
   getFileUrl(key: string): string {

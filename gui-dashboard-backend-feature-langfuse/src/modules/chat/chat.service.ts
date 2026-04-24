@@ -5,6 +5,7 @@ import { Chat } from './entities/chat.entity';
 import { ChatMessage } from './entities/chat-message.entity';
 import { Dashboard } from '../dashboard/entities/dashboard.entity';
 import { CreateChatMessageDto, UpdateChatDto } from './dto/chat.dto';
+import { logger } from '../../utils/logger';
 
 @Injectable()
 export class ChatService {
@@ -122,9 +123,9 @@ export class ChatService {
     userId: string,
     createDto: CreateChatMessageDto,
   ): Promise<ChatMessage> {
-    console.log('addMessage called:', { dashboardId, userId, createDto });
+    logger.debug('addMessage called:', { dashboardId, userId, createDto });
     const chat = await this.findOneByDashboard(dashboardId, userId);
-    console.log('Chat found:', chat.id);
+    logger.debug('Chat found:', chat.id);
 
     const maxOrder = await this.messageRepository
       .createQueryBuilder('message')
@@ -138,19 +139,19 @@ export class ChatService {
       order: (maxOrder?.max ?? -1) + 1,
     });
     const savedMessage = await this.messageRepository.save(message);
-    console.log('Message saved:', savedMessage.id);
+    logger.debug('Message saved:', savedMessage.id);
     return savedMessage;
   }
 
   async getMessages(dashboardId: string, userId: string): Promise<ChatMessage[]> {
-    console.log('getMessages called:', { dashboardId, userId });
+    logger.debug('getMessages called:', { dashboardId, userId });
     const chat = await this.findOneByDashboard(dashboardId, userId);
-    console.log('Chat for messages:', chat.id);
+    logger.debug('Chat for messages:', chat.id);
     const messages = this.messageRepository.find({
       where: { chatId: chat.id },
       order: { order: 'ASC' },
     });
-    console.log('Messages found:', (await messages).length);
+    logger.debug('Messages found:', (await messages).length);
     return messages;
   }
 
