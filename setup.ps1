@@ -49,7 +49,7 @@ services:
     image: maximhq/bifrost
     container_name: dashboard-bifrost
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - ./bifrost-data:/app/data
     restart: always
@@ -157,8 +157,12 @@ if (!$configExists) {
     if (!(Test-Path "bifrost-data")) { New-Item -ItemType Directory -Path "bifrost-data" | Out-Null }
     $bifrostJson = @"
 {
-  "providers": [{ "name": "groq", "apiKey": "$groqKey", "baseUrl": "https://api.groq.com/openai/v1" }],
-  "virtualKeys": [{ "name": "default", "key": "$bifrostKey", "provider": "groq" }]
+  "providers": {
+    "groq": { "apiKey": "$groqKey", "baseUrl": "https://api.groq.com/openai/v1" }
+  },
+  "virtualKeys": [
+    { "name": "default", "key": "$bifrostKey", "provider": "groq" }
+  ]
 }
 "@
     $bifrostJson | Out-File "bifrost-data/config.json" -Encoding utf8
@@ -183,5 +187,8 @@ if ($start -match "[Nn]") {
     Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
     Write-Host "  🌐 Dashboard:     http://localhost:3000"
     Write-Host "  🔌 API:           http://localhost:3500"
-    Write-Host "  🧠 AI Gateway:    http://localhost:8080"
+    Write-Host "  🧠 AI Gateway:    http://localhost:8081"
+
+    Write-Host "`nShowing live logs (Press Ctrl+C to stop viewing logs, the dashboard will keep running):" -ForegroundColor Blue
+    docker compose logs -f
 }

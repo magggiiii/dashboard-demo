@@ -49,7 +49,7 @@ services:
     image: maximhq/bifrost
     container_name: dashboard-bifrost
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - ./bifrost-data:/app/data
     restart: always
@@ -183,8 +183,12 @@ if [ "$CONFIG_EXISTS" != "true" ]; then
     mkdir -p bifrost-data
     cat > bifrost-data/config.json <<EOF
 {
-  "providers": [{ "name": "groq", "apiKey": "$GROQ_KEY", "baseUrl": "https://api.groq.com/openai/v1" }],
-  "virtualKeys": [{ "name": "default", "key": "$BIFROST_VIRTUAL_KEY", "provider": "groq" }]
+  "providers": {
+    "groq": { "apiKey": "$GROQ_KEY", "baseUrl": "https://api.groq.com/openai/v1" }
+  },
+  "virtualKeys": [
+    { "name": "default", "key": "$BIFROST_VIRTUAL_KEY", "provider": "groq" }
+  ]
 }
 EOF
 fi
@@ -210,5 +214,7 @@ else
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo "  🌐 Dashboard:     http://localhost:3000"
     echo "  🔌 API:           http://localhost:3500"
-    echo "  🧠 AI Gateway:    http://localhost:8080"
+    echo "  🧠 AI Gateway:    http://localhost:8081"
+    echo -e "\n${BLUE}Showing live logs (Press Ctrl+C to stop viewing logs, the dashboard will keep running):${NC}\n"
+    docker compose logs -f
 fi
