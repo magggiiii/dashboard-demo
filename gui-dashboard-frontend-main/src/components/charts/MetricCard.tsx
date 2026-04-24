@@ -28,7 +28,7 @@ export const MetricCard: React.FC<{ metric: Metric }> = ({ metric }) => {
                             {isPositive && <ArrowUpIcon className="w-3 h-3 mr-1" />}
                             {isNegative && <ArrowDownIcon className="w-3 h-3 mr-1" />}
                             {!isPositive && !isNegative && <MinusIcon className="w-3 h-3 mr-1" />}
-                            {Math.abs(metric.change)}%
+                            {Math.abs(metric.change || 0)}%
                         </div>
                     )}
                 </div>
