@@ -2,38 +2,34 @@
 
 A powerful, agentic AI dashboard built with NestJS, Next.js, and CopilotKit.
 
-## 🐳 Quick Start (Docker)
+## 🚀 Quick Start (One-Command Deployment)
 
-The easiest way to get started is using Docker.
+Deploy the entire stack (Database, AI Gateway, Backend, and Frontend) instantly:
 
-### Prerequisites
-- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) installed and running.
-- A [Groq API Key](https://console.groq.com/keys) (Free).
-
-### One-Command Setup
-
-Run the following command in your terminal to install and start the entire stack:
-
+### Mac & Linux
 ```bash
 curl -sSL https://raw.githubusercontent.com/magggiiii/dashboard-demo/main/install.sh | bash
+```
+
+### Windows (PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/magggiiii/dashboard-demo/main/setup.ps1 | iex
 ```
 
 **What this does:**
 1. Checks for Docker installation.
 2. Creates the necessary configuration files.
 3. Asks for your **Groq API Key**.
-4. Pulls the latest pre-built images from GHCR.
+4. Pulls the latest multi-platform images (Intel, AMD, or Apple Silicon).
 5. Starts the Dashboard, API, and AI Gateway.
 
 ---
 
 ### Manual Setup (Alternative)
-
 If you have already cloned the repository:
-
 ```bash
 # Mac or Linux
-./setup.sh
+./install.sh
 
 # Windows (PowerShell)
 .\setup.ps1

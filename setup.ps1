@@ -1,154 +1,187 @@
-# Colors for better output
-$GREEN = "`e[0;32m"
-$BLUE = "`e[0;34m"
-$RED = "`e[0;31m"
-$NC = "`e[0m"
+# ==============================================================================
+# 🚀 CopilotKit Dashboard Installer (Windows)
+# ==============================================================================
 
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-Write-Host "  🚀 CopilotKit Dashboard Setup"
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host "  🚀 CopilotKit Dashboard Installer" -ForegroundColor Cyan
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
 
-# 1. Check Prerequisites
-Write-Host "`n$BLUEChecking prerequisites...$NC"
+# --- 1. Prerequisite Checks ---
+Write-Host "`nChecking prerequisites..." -ForegroundColor Blue
 
 if (!(Get-Command docker -ErrorAction SilentlyContinue)) {
-    Write-Host "$RED✗ Docker is not installed.$NC"
-    Write-Host "Please install Docker Desktop from: https://docs.docker.com/get-started/get-docker/"
-    exit 1
+    Write-Host "✗ Docker is not installed. Please install Docker Desktop: https://docs.docker.com/desktop/install/windows/" -ForegroundColor Red
+    exit
 }
-Write-Host "$GREEN✓ Docker found$NC"
+Write-Host "✓ Docker found" -ForegroundColor Green
 
-if (!(docker compose version 2>$null)) {
-    Write-Host "$RED✗ Docker Compose is not installed.$NC"
-    Write-Host "Please install Docker Desktop from: https://docs.docker.com/get-started/get-docker/"
-    exit 1
+if (!(Get-Command "docker compose" -ErrorAction SilentlyContinue)) {
+    # Check if it's 'docker-compose' (old v1)
+    if (!(Get-Command docker-compose -ErrorAction SilentlyContinue)) {
+        Write-Host "✗ Docker Compose is not installed." -ForegroundColor Red
+        exit
+    }
 }
-Write-Host "$GREEN✓ Docker Compose found$NC"
+Write-Host "✓ Docker Compose found" -ForegroundColor Green
 
-# 2. Configuration
-Write-Host "`n$BLUE━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
-Write-Host "$BLUE  🧠 AI Configuration$NC"
-Write-Host "$BLUE━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
+# --- 2. File Unpacking ---
+Write-Host "`nPreparing deployment files..." -ForegroundColor Blue
 
-if (Test-Path .env) {
-    $overwrite = Read-Host "Configuration file (.env) already exists. Overwrite? (y/n) [n]"
-    if ($overwrite -notmatch "[Yy]") {
-        Write-Host "Skipping configuration..."
+$dcContent = @"
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: dashboard-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: \${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: \${DB_PASSWORD:-postgres}
+      POSTGRES_DB: \${DB_NAME:-copilotkit}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  bifrost:
+    image: maximhq/bifrost
+    container_name: dashboard-bifrost
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./bifrost-data:/app/data
+    restart: always
+
+  backend:
+    image: ghcr.io/magggiiii/copilot-dashboard-backend:latest
+    container_name: dashboard-backend
+    ports:
+      - "3500:3500"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      BIFROST_BASE_URL: http://bifrost:8080/v1
+    depends_on:
+      db:
+        condition: service_healthy
+      bifrost:
+        condition: service_started
+    restart: always
+
+  frontend:
+    image: ghcr.io/magggiiii/copilot-dashboard-frontend:latest
+    container_name: dashboard-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  postgres_data:
+"@
+
+$envContent = @"
+DB_HOST=db
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=copilotkit
+JWT_SECRET=CHANGE_ME
+BIFROST_BASE_URL=http://bifrost:8080/v1
+BIFROST_API_KEY=CHANGE_ME
+BIFROST_MODEL=groq/llama-3.3-70b-versatile
+FRONTEND_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:3500
+NODE_ENV=production
+PORT=3500
+LANGFUSE_BASE_URL=https://cloud.langfuse.com
+ENABLE_DEBUG_LOGS=false
+NEXT_PUBLIC_ENABLE_DEBUG_LOGS=false
+"@
+
+if (!(Test-Path "docker-compose.yml")) {
+    $dcContent | Out-File -FilePath "docker-compose.yml" -Encoding utf8
+    Write-Host "✓ Created docker-compose.yml" -ForegroundColor Green
+}
+
+if (!(Test-Path ".env.example")) {
+    $envContent | Out-File -FilePath ".env.example" -Encoding utf8
+    Write-Host "✓ Created .env.example" -ForegroundColor Green
+}
+
+$configExists = $false
+if (Test-Path ".env") {
+    $ans = Read-Host "Configuration file (.env) already exists. Overwrite? (y/n) [n]"
+    if ($ans -match "[Yy]") {
+        Copy-Item ".env.example" ".env"
     } else {
-        Copy-Item .env.example .env -Force
+        Write-Host "Skipping configuration..."
+        $configExists = $true
     }
 } else {
-    Copy-Item .env.example .env
+    Copy-Item ".env.example" ".env"
 }
 
-# Ask for Groq API Key
-Write-Host "`nThe dashboard uses Groq for AI. You need a free API key."
-Write-Host "Get one at: https://console.groq.com/keys"
+# --- 3. Configuration ---
+if (!$configExists) {
+    Write-Host "`n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Blue
+    Write-Host "  🧠 AI Configuration" -ForegroundColor Blue
+    Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Blue
 
-$GROQ_KEY = ""
-while ([string]::IsNullOrWhiteSpace($GROQ_KEY)) {
-    $GROQ_KEY = Read-Host "Enter your Groq API key"
-    if ([string]::IsNullOrWhiteSpace($GROQ_KEY)) {
-        Write-Host "$REDAPI key is required.$NC"
+    Write-Host "`nThe dashboard uses Groq for AI. Get a key at: https://console.groq.com/keys"
+    
+    $groqKey = ""
+    while ($groqKey -eq "") {
+        $groqKey = Read-Host "Enter your Groq API key"
+        if ($groqKey -eq "") { Write-Host "API key is required." -ForegroundColor Red }
     }
+
+    # Secrets
+    Write-Host "`nGenerating secure secrets..." -ForegroundColor Blue
+    $jwtSecret = [Convert]::ToBase64String((1..32 | ForEach-Object { [byte](Get-Random -Minimum 0 -Maximum 255) }))
+    $bifrostKey = "bk_" + [System.Guid]::NewGuid().ToString("n").Substring(0,16)
+
+    # Update .env
+    $envData = Get-Content ".env"
+    $envData = $envData -replace "^JWT_SECRET=.*", "JWT_SECRET=$jwtSecret"
+    $envData = $envData -replace "^BIFROST_API_KEY=.*", "BIFROST_API_KEY=$bifrostKey"
+    $envData | Out-File ".env" -Encoding utf8
+
+    # Bifrost Config
+    if (!(Test-Path "bifrost-data")) { New-Item -ItemType Directory -Path "bifrost-data" | Out-Null }
+    $bifrostJson = @"
+{
+  "providers": [{ "name": "groq", "apiKey": "$groqKey", "baseUrl": "https://api.groq.com/openai/v1" }],
+  "virtualKeys": [{ "name": "default", "key": "$bifrostKey", "provider": "groq" }]
+}
+"@
+    $bifrostJson | Out-File "bifrost-data/config.json" -Encoding utf8
 }
 
-# 3. Langfuse Configuration (Optional)
-Write-Host "`n$BLUE━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
-Write-Host "$BLUE  📊 AI Tracing (Langfuse) — Optional$NC"
-Write-Host "$BLUE━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
-
-Write-Host "Langfuse lets you trace and debug AI interactions."
-Write-Host "To set it up:"
-Write-Host "  1. Create a free account at https://cloud.langfuse.com"
-Write-Host "  2. Create a new project"
-Write-Host "  3. Go to Settings → API Keys → Create new"
-
-$has_langfuse = Read-Host "Do you have Langfuse API keys? (y/n) [n]"
-if ($has_langfuse -match "[Yy]") {
-    $LF_SECRET = Read-Host "Enter Langfuse Secret Key (sk-lf-...)"
-    $LF_PUBLIC = Read-Host "Enter Langfuse Public Key (pk-lf-...)"
-}
-
-# 4. Advanced Configuration (Optional)
-Write-Host "`n$BLUE━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
-$advanced = Read-Host "Configure advanced features? (OAuth, S3) (y/n) [n]"
-if ($advanced -match "[Yy]") {
-    $GOOGLE_ID = Read-Host "Google Client ID"
-    $GOOGLE_SECRET = Read-Host "Google Client Secret"
-    $AWS_ID = Read-Host "AWS Access Key ID"
-    $AWS_SECRET = Read-Host "AWS Secret Access Key"
-    $S3_BUCKET = Read-Host "S3 Bucket Name"
-}
-
-# 5. Generate Random Secrets
-Write-Host "`n$BLUEGenerating secure secrets...$NC"
-$bytes = New-Object Byte[] 32
-[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-$JWT_SECRET = [Convert]::ToBase64String($bytes) -replace '[/+=]', ''
-$BIFROST_VIRTUAL_KEY = "bk_" + [Guid]::NewGuid().ToString("n").Substring(0, 32)
-
-# 6. Apply Configuration
-Write-Host "$BLUEApplying configuration to .env...$NC"
-
-function Update-Env($key, $value) {
-    if ($value) {
-        $content = Get-Content .env
-        $escapedValue = $value -replace '[&/\\]', '\$&'
-        $content = $content -replace "^$key=.*", "$key=$value"
-        $content | Set-Content .env
-    }
-}
-
-Update-Env "BIFROST_API_KEY" "$BIFROST_VIRTUAL_KEY"
-Update-Env "JWT_SECRET" "$JWT_SECRET"
-
-# Create Bifrost Config
-if (! (Test-Path bifrost-data)) { New-Item -ItemType Directory -Path bifrost-data }
-$bifrostConfig = @{
-    providers = @(
-        @{
-            name = "groq"
-            apiKey = $GROQ_KEY
-            baseUrl = "https://api.groq.com/openai/v1"
-        }
-    )
-    virtualKeys = @(
-        @{
-            name = "default"
-            key = $BIFROST_VIRTUAL_KEY
-            provider = "groq"
-        }
-    )
-}
-$bifrostConfig | ConvertTo-Json -Depth 10 | Set-Content bifrost-data/config.json
-
-if ($LF_SECRET) { Update-Env "LANGFUSE_SECRET_KEY" "$LF_SECRET" }
-if ($LF_PUBLIC) { Update-Env "LANGFUSE_PUBLIC_KEY" "$LF_PUBLIC" }
-if ($GOOGLE_ID) { Update-Env "GOOGLE_CLIENT_ID" "$GOOGLE_ID" }
-if ($GOOGLE_SECRET) { Update-Env "GOOGLE_CLIENT_SECRET" "$GOOGLE_SECRET" }
-if ($AWS_ID) { Update-Env "AWS_ACCESS_KEY_ID" "$AWS_ID" }
-if ($AWS_SECRET) { Update-Env "AWS_SECRET_ACCESS_KEY" "$AWS_SECRET" }
-if ($S3_BUCKET) { Update-Env "S3_BUCKET_NAME" "$S3_BUCKET" }
-
-# 7. Launch
-Write-Host "`n$GREEN━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
-Write-Host "$GREEN  ✅ Setup Complete!$NC"
-Write-Host "$GREEN━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
+# --- 4. Launch ---
+Write-Host "`n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
+Write-Host "  ✅ Ready to Launch!" -ForegroundColor Green
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
 
 $start = Read-Host "Start the dashboard now? (y/n) [y]"
 if ($start -match "[Nn]") {
     Write-Host "Setup finished. Run 'docker compose up -d' to start later."
 } else {
-    Write-Host "`n$BLUEStarting services...$NC"
+    Write-Host "`nPulling pre-built images from GHCR..." -ForegroundColor Blue
     docker compose pull
+    Write-Host "`nStarting services..." -ForegroundColor Blue
     docker compose up -d
     
-    Write-Host "`n$GREEN━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
-    Write-Host "$GREEN  🎉 Dashboard is ready!$NC"
-    Write-Host "$GREEN━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$NC"
+    Write-Host "`n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
+    Write-Host "  🎉 Dashboard is ready!" -ForegroundColor Green
+    Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
     Write-Host "  🌐 Dashboard:     http://localhost:3000"
     Write-Host "  🔌 API:           http://localhost:3500"
     Write-Host "  🧠 AI Gateway:    http://localhost:8080"
-    Write-Host "`n$BLUEMessage: Sign up with email/password to get started!$NC"
 }
