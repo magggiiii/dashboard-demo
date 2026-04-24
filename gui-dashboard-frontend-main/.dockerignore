@@ -5,4 +5,3 @@ node_modules
 *.md
 Dockerfile
 .dockerignore
-docker-entrypoint.sh
