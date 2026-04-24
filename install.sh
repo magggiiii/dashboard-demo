@@ -62,6 +62,7 @@ services:
     env_file:
       - .env
     environment:
+      PORT: 3500
       DB_HOST: db
       BIFROST_BASE_URL: http://bifrost:8080/v1
     depends_on:
@@ -78,6 +79,8 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      PORT: 3000
     depends_on:
       - backend
     restart: always
@@ -99,7 +102,7 @@ BIFROST_MODEL=groq/llama-3.3-70b-versatile
 FRONTEND_URL=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:3500
 NODE_ENV=production
-PORT=3500
+BACKEND_INTERNAL_PORT=3500
 LANGFUSE_BASE_URL=https://cloud.langfuse.com
 ENABLE_DEBUG_LOGS=false
 NEXT_PUBLIC_ENABLE_DEBUG_LOGS=false
@@ -184,11 +187,10 @@ if [ "$CONFIG_EXISTS" != "true" ]; then
     cat > bifrost-data/config.json <<EOF
 {
   "providers": {
-    "groq": { "apiKey": "$GROQ_KEY", "baseUrl": "https://api.groq.com/openai/v1" }
-  },
-  "virtualKeys": [
-    { "name": "default", "key": "$BIFROST_VIRTUAL_KEY", "provider": "groq" }
-  ]
+    "groq": {
+      "keys": [{ "value": "$GROQ_KEY" }]
+    }
+  }
 }
 EOF
 fi
