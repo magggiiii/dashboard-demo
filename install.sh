@@ -71,7 +71,7 @@ services:
       bifrost:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3500/ || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3500/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -195,6 +195,19 @@ if [ "$CONFIG_EXISTS" != "true" ]; then
         read LF_PUBLIC < /dev/tty
     fi
 
+    # S3
+    echo -e "\n${BLUE}📦 File Storage (AWS S3) — Optional${NC}"
+    echo -n "Do you want to configure S3 for file uploads? (y/n) [n]: "
+    read has_s3 < /dev/tty
+    if [ "$has_s3" = "y" ] || [ "$has_s3" = "Y" ]; then
+        echo -n "Enter AWS Access Key ID: "
+        read AWS_ID < /dev/tty
+        echo -n "Enter AWS Secret Access Key: "
+        read AWS_SECRET < /dev/tty
+        echo -n "Enter S3 Bucket Name: "
+        read S3_BUCKET < /dev/tty
+    fi
+
     # Secrets
     echo -e "\n${BLUE}Generating secure secrets...${NC}"
     JWT_SECRET=$(openssl rand -base64 32 | tr -d '/+=')
@@ -204,6 +217,9 @@ if [ "$CONFIG_EXISTS" != "true" ]; then
     update_env "JWT_SECRET" "$JWT_SECRET"
     if [ -n "$LF_SECRET" ]; then update_env "LANGFUSE_SECRET_KEY" "$LF_SECRET"; fi
     if [ -n "$LF_PUBLIC" ]; then update_env "LANGFUSE_PUBLIC_KEY" "$LF_PUBLIC"; fi
+    if [ -n "$AWS_ID" ]; then update_env "AWS_ACCESS_KEY_ID" "$AWS_ID"; fi
+    if [ -n "$AWS_SECRET" ]; then update_env "AWS_SECRET_ACCESS_KEY" "$AWS_SECRET"; fi
+    if [ -n "$S3_BUCKET" ]; then update_env "S3_BUCKET_NAME" "$S3_BUCKET"; fi
 
     mkdir -p bifrost-data
     cat > bifrost-data/config.json <<EOF
