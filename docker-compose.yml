@@ -34,11 +34,17 @@ services:
     environment:
       DB_HOST: db
       BIFROST_BASE_URL: http://bifrost:8080/v1
+      PORT: 3500
     depends_on:
       db:
         condition: service_healthy
       bifrost:
         condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3500/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: always
 
   frontend:
@@ -48,8 +54,12 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: always
 
 volumes:

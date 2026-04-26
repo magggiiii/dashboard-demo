@@ -49,7 +49,7 @@ services:
     image: maximhq/bifrost
     container_name: dashboard-bifrost
     ports:
-      - "8081:8080"
+      - "8080:8080"
     volumes:
       - ./bifrost-data:/app/data
     restart: always
@@ -70,6 +70,11 @@ services:
         condition: service_healthy
       bifrost:
         condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3500/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: always
 
   frontend:
@@ -81,8 +86,10 @@ services:
       - .env
     environment:
       PORT: 3000
+      HOSTNAME: 0.0.0.0
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: always
 
 volumes:
@@ -108,7 +115,22 @@ ENABLE_DEBUG_LOGS=false
 NEXT_PUBLIC_ENABLE_DEBUG_LOGS=false
 EOF
 
-# --- 3. Prerequisite Checks ---
+# --- 3. Port Cleanup & Prerequisite Checks ---
+echo -e "\n${BLUE}Cleaning up port conflicts...${NC}"
+
+kill_port() {
+    local port=$1
+    local pid=$(lsof -t -i :$port)
+    if [ -n "$pid" ]; then
+        echo -e "${BLUE}Stopping process on port $port (PID: $pid)...${NC}"
+        kill -9 $pid 2>/dev/null || true
+    fi
+}
+
+kill_port 3000
+kill_port 3500
+kill_port 8080
+
 echo -e "\n${BLUE}Checking prerequisites...${NC}"
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -204,19 +226,19 @@ echo -n "Start the dashboard now? (y/n) [y]: "
 read start < /dev/tty
 
 if [ "$start" = "n" ] || [ "$start" = "N" ]; then
-    echo "Setup finished. Run 'docker compose up -d' to start later."
+    echo "Setup finished. Run 'docker compose -p dashboard-demo up -d' to start later."
 else
     echo -e "\n${BLUE}Pulling pre-built images from GHCR...${NC}"
-    docker compose pull
+    docker compose -p dashboard-demo pull
     echo -e "\n${BLUE}Starting services...${NC}"
-    docker compose up -d
+    docker compose -p dashboard-demo up -d
     
     echo -e "\n${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${GREEN}  🎉 Dashboard is ready!${NC}"
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo "  🌐 Dashboard:     http://localhost:3000"
     echo "  🔌 API:           http://localhost:3500"
-    echo "  🧠 AI Gateway:    http://localhost:8081"
+    echo "  🧠 AI Gateway:    http://localhost:8080"
     echo -e "\n${BLUE}Showing live logs (Press Ctrl+C to stop viewing logs, the dashboard will keep running):${NC}\n"
-    docker compose logs -f
+    docker compose -p dashboard-demo logs -f
 fi
