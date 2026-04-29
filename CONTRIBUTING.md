@@ -19,3 +19,11 @@
 - Logging is actionable for failure diagnosis.
 - CI passes with required gates.
 - PR includes risk and rollback notes.
+
+## Environment Baselines
+- Root stack defaults: `.env.example`
+- Backend development defaults: `gui-dashboard-backend-feature-langfuse/.env.example`
+- Frontend development defaults: `gui-dashboard-frontend-main/.env.example`
+
+## Stacked PR Procedure
+- Use `docs/STACKED_PR_WORKFLOW.md` for branch/merge order and review constraints.
