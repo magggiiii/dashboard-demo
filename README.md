@@ -44,6 +44,38 @@ Once started, you can access the following:
 - **🧠 AI Gateway (Bifrost):** [http://localhost:8080](http://localhost:8080)
 - **📊 AI Tracing (Langfuse Cloud):** [https://cloud.langfuse.com](https://cloud.langfuse.com)
 
+## 🧭 Local Development (Canonical Contributor Flow)
+
+Use this as the default path when developing code in this repository.
+
+### Recommended: Build from local source (hot code iteration)
+
+```bash
+# 1) Create local env file from the root template
+cp .env.example .env
+
+# 2) Start everything from source (frontend + backend + db + bifrost)
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This mode builds:
+- `./gui-dashboard-backend-feature-langfuse`
+- `./gui-dashboard-frontend-main`
+
+### Alternative: Run prebuilt GHCR images
+
+Use this when you only want to run the stack, not edit/build app code locally.
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
+Important:
+- `docker-compose.dev.yml` = local source build workflow (recommended for contributors)
+- `docker-compose.yml` = prebuilt image workflow
+- Avoid mixing both modes in the same session to prevent container/project confusion
+
 ## 🛠️ Common Commands (Makefile)
 
 If you have `make` installed, you can use these convenience commands:
@@ -54,6 +86,10 @@ If you have `make` installed, you can use these convenience commands:
 - `make restart` - Restart the stack.
 - `make clean` - Stop services and delete ALL data (volumes).
 - `make dev` - Build and start services from local source code.
+- `make lint` - Run frontend + backend lint checks.
+- `make test` - Run backend test suite.
+- `make build` - Build frontend + backend.
+- `make check` - Run lint + test + build (full quality gate).
 
 ## 📁 Project Structure
 

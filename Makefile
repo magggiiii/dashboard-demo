@@ -1,4 +1,4 @@
-.PHONY: setup start stop restart logs logs-be logs-fe clean dev status
+.PHONY: setup start stop restart logs logs-be logs-fe clean dev status lint test build check
 
 setup:
 	@chmod +x setup.sh
@@ -33,3 +33,15 @@ dev:
 
 status:
 	docker compose ps
+
+lint:
+	npm run lint
+
+test:
+	npm run test
+
+build:
+	npm run build
+
+check:
+	npm run check

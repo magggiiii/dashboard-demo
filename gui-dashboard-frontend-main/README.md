@@ -28,7 +28,13 @@ This repository contains the frontend implementation for the Gen-UI Dashboard, b
    npm install
    ```
 
-2. Configure environment variables in `.env.local`.
+2. Configure environment variables:
+   - For full-stack development from the repo root, use root `.env` (`cp ../.env.example ../.env`) and run Docker Compose.
+   - For frontend-only local run, create `.env.local` with:
+     ```env
+     NEXT_PUBLIC_API_URL=http://localhost:3500
+     NEXT_PUBLIC_ENABLE_DEBUG_LOGS=true
+     ```
 
 3. Run the development server:
    ```bash

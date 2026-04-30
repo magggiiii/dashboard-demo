@@ -57,9 +57,9 @@ GITHUB_CLIENT_SECRET=your-github-client-secret
 GITHUB_CALLBACK_URL=http://localhost:3000/auth/github/callback
 
 # Frontend
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:3000
 NODE_ENV=development
-PORT=3000
+PORT=3500
 ```
 
 ## Database Schema

@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "lint": "npm --prefix gui-dashboard-frontend-main run lint && npm --prefix gui-dashboard-backend-feature-langfuse run lint:check",
+    "test": "npm --prefix gui-dashboard-backend-feature-langfuse run test",
+    "build": "npm --prefix gui-dashboard-frontend-main run build && npm --prefix gui-dashboard-backend-feature-langfuse run build",
+    "check": "npm run lint && npm run test && npm run build"
+  },
   "dependencies": {
     "@langfuse/otel": "^5.2.0",
     "@langfuse/tracing": "^5.2.0",
