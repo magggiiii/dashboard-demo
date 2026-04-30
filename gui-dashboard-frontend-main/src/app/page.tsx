@@ -16,6 +16,7 @@ import { DashboardResponse, fileApi } from '@/lib/dashboard';
 import { chatApi, ChatMessage } from '@/lib/chat';
 import { useAuth } from '@/context/AuthContext';
 import { useCopilotChatMessages } from '@/context/CopilotChatContext';
+import { getUiSystemFlags } from '@/lib/featureFlags/uiSystem';
 import * as XLSX from 'xlsx';
 import "@copilotkit/react-ui/styles.css";
 
@@ -30,6 +31,7 @@ export default function DashboardPage() {
 }
 
 function DashboardContent() {
+  const uiFlags = getUiSystemFlags();
   const { user, logout } = useAuth();
   const { chatMessages: contextChatMessages, setChatMessages: setContextChatMessages } = useCopilotChatMessages();
   const [isDataSidebarOpen, setIsDataSidebarOpen] = useState(false);
@@ -562,11 +564,11 @@ function DashboardContent() {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className={`flex h-screen overflow-hidden ${uiFlags.shell ? 'ui-shell-v2' : 'bg-slate-50'}`}>
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+      <div className={`flex-1 flex flex-col min-w-0 overflow-hidden relative ${uiFlags.shell ? 'ui-shell-v2' : ''}`}>
         <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <header className="sticky top-0 z-30 w-full border-b border-white/20 bg-white/60 backdrop-blur-xl">
+          <header className={`sticky top-0 z-30 w-full backdrop-blur-xl ${uiFlags.shell ? 'ui-panel-v2 border-b border-[var(--ui-border)]' : 'border-b border-white/20 bg-white/60'}`}>
             <div className="w-full max-w-[1800px] mx-auto px-6 h-16 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200">
@@ -687,7 +689,7 @@ function DashboardContent() {
           </header>
 
           <div className="w-full max-w-[1800px] mx-auto p-6 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${uiFlags.charts ? 'gap-4' : 'gap-6'}`}>
               {dashboard.elements && dashboard.elements.length > 0 && dashboard.elements.map((element) => {
                 if (!element) return null;
                 return (
@@ -698,6 +700,7 @@ function DashboardContent() {
                       ${element.type === 'chart' || element.type === 'table'
                         ? 'col-span-full md:col-span-2 lg:col-span-2 xl:col-span-2'
                         : 'col-span-1'}
+                      ${uiFlags.charts ? 'motion-panel' : ''}
                     `}
                   >
                     <GenUIRuntime data={element} />
@@ -785,7 +788,8 @@ function DashboardContent() {
 
       {/* Unified Chat & Data Sidebar */}
       <div className={`
-        h-full bg-white transition-all duration-300 ease-in-out border-l border-slate-200
+        h-full transition-all duration-300 ease-in-out border-l
+        ${uiFlags.sidebars ? 'ui-panel-v2 border-[var(--ui-border)]' : 'bg-white border-slate-200'}
         ${isChatSidebarOpen ? 'w-[28rem] opacity-100' : 'w-0 opacity-0 overflow-hidden border-none'}
       `}>
         <div className="w-[28rem] h-full">
@@ -794,6 +798,7 @@ function DashboardContent() {
             connectedSources={connectedSources}
             onDisconnectSource={handleDisconnectSource}
             onClose={() => setIsChatSidebarOpen(false)}
+            uiV2={uiFlags.sidebars}
           />
         </div>
       </div>
@@ -807,6 +812,7 @@ function DashboardContent() {
         onSourceAdded={handleDataConnected}
         onSourceRemoved={handleDisconnectSource}
         currentDashboardId={currentDashboardId}
+        uiV2={uiFlags.sidebars}
       />
     </div>
   );

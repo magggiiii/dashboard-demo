@@ -114,6 +114,7 @@ interface ChatDataSidebarProps {
     connectedSources: any[];
     onDisconnectSource: (sourceId: string) => void;
     onClose: () => void;
+    uiV2?: boolean;
 }
 
 const INITIAL_MESSAGE = "Hi there! 👋 What would you like to see or change on your dashboard?";
@@ -227,14 +228,14 @@ const ChatInterface = ({ onMessage }: { onMessage: (msg: any) => void }) => {
     );
 };
 
-export const ChatDataSidebar = ({ allParsedData, connectedSources, onDisconnectSource, onClose }: ChatDataSidebarProps) => {
+export const ChatDataSidebar = ({ allParsedData, connectedSources, onDisconnectSource, onClose, uiV2 = false }: ChatDataSidebarProps) => {
     const [activeTab, setActiveTab] = useState<'chat' | 'data'>('chat');
     const { onNewCopilotMessage } = useCopilotChatMessages();
 
     return (
-        <div className="flex flex-col h-full bg-white relative">
+        <div className={`flex flex-col h-full relative ${uiV2 ? 'ui-panel-v2' : 'bg-white'} ${uiV2 ? 'motion-panel' : ''}`}>
             {/* Header Tabs */}
-            <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-4">
+            <div className={`flex items-center justify-between px-4 ${uiV2 ? 'border-b border-[var(--ui-border)] bg-[var(--ui-surface-2)]' : 'border-b border-slate-200 bg-slate-50/50'}`}>
                 <div className="flex">
                     <button
                         onClick={() => setActiveTab('chat')}

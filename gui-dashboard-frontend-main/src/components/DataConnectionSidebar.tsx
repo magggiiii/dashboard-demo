@@ -23,6 +23,7 @@ interface DataConnectionSidebarProps {
     currentDashboardId?: string | null;
     onSourceAdded: (source: ConnectedSource, data: Record<string, unknown>[]) => void;
     onSourceRemoved: (sourceId: string) => void;
+    uiV2?: boolean;
 }
 
 type ViewType = 'menu' | 'upload' | 'google-sheets' | 'preview';
@@ -35,6 +36,7 @@ export const DataConnectionSidebar: React.FC<DataConnectionSidebarProps> = ({
     currentDashboardId,
     onSourceAdded,
     onSourceRemoved,
+    uiV2 = false,
 }) => {
     const [view, setView] = useState<ViewType>('menu');
     const [previewSourceId, setPreviewSourceId] = useState<string | null>(null);
@@ -178,10 +180,10 @@ export const DataConnectionSidebar: React.FC<DataConnectionSidebarProps> = ({
 
             <div
                 className={`
-                    fixed top-0 right-0 h-full w-[28rem] bg-white shadow-2xl z-[70]
+                    fixed top-0 right-0 h-full w-[28rem] z-[70]
                     transform transition-transform duration-300 ease-in-out
                     ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-                    flex flex-col
+                    flex flex-col ${uiV2 ? 'ui-panel-v2 motion-panel' : 'bg-white shadow-2xl'}
                 `}
             >
                 <div className="flex flex-col border-b border-slate-200">

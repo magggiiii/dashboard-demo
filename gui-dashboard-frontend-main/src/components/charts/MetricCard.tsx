@@ -7,14 +7,14 @@ export const MetricCard: React.FC<{ metric: Metric }> = ({ metric }) => {
     const isNegative = metric.trend === 'down';
 
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/60 flex flex-col h-full min-h-[180px] card-hover relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110 duration-500 ease-in-out" />
+        <div className="ui-panel-v2 motion-panel p-4 md:p-5 rounded-2xl shadow-sm flex flex-col h-full min-h-[180px] card-hover relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--ui-surface-2)] rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110 duration-500 ease-in-out" />
             <div className="relative z-10 mb-4">
-                <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider truncate block">{metric.label}</span>
+                <span className="ui-muted-v2 text-xs font-semibold uppercase tracking-wider truncate block">{metric.label}</span>
             </div>
 
             <div className="relative z-10 flex-1 flex items-center justify-center min-h-0">
-                <span className="text-3xl sm:text-4xl font-bold text-slate-800 tracking-tight break-all text-center">
+                <span className="text-3xl sm:text-4xl font-bold tracking-tight break-all text-center">
                     {metric.value}
                 </span>
             </div>
@@ -32,7 +32,7 @@ export const MetricCard: React.FC<{ metric: Metric }> = ({ metric }) => {
                         </div>
                     )}
                 </div>
-                <span className="text-slate-400 text-xs font-medium">vs last month</span>
+                <span className="ui-muted-v2 text-xs font-medium">vs last month</span>
             </div>
         </div>
     );

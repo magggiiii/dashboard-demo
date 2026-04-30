@@ -100,3 +100,15 @@ Plans:
 | 5. Full System UAT and Comprehensive Issue Report | 0/0 | Not started | - |
 | 6. Dockerization and Flexible API Configuration without Rebuilds | 0/0 | Not started | - |
 | 7. Codebase Standardization, PR Governance, and Production Readiness | 0/0 | Not started | - |
+
+### Phase 8: UI/UX Enhancement with TasteSkill design system integration
+
+**Goal:** Deliver a premium modern, dense, app-wide TasteSkill UI system rollout behind section flags with full light/dark parity, while preserving Copilot flow and all existing feature behavior.
+**Requirements**: P8-UI-01, P8-UI-02, P8-UI-03
+**Depends on:** Phase 7
+**Plans:** 3 plans
+
+Plans:
+- [x] 08-01-PLAN.md — Build app-wide token/theme/motion foundation and section-level UI feature flags.
+- [x] 08-02-PLAN.md — Roll out shell and sidebar TasteSkill UI upgrades behind flags with Copilot behavior parity.
+- [ ] 08-03-PLAN.md — Roll out chart/table dense parity and complete theme + behavior verification.

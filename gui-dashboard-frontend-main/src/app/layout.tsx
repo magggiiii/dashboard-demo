@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "../styles/tokens.css";
+import "../styles/motion.css";
 import { CopilotProvider } from "@/components/CopilotProvider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/context/AuthContext";
@@ -42,4 +44,3 @@ export default function RootLayout({
     </html>
   );
 }
-
